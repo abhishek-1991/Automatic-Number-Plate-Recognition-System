@@ -1,21 +1,23 @@
 import numpy as np
-import pandas as pd
+#import pandas as pd
 import scipy.special
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import scipy.misc
-import threading
-from multiprocessing import Process, Pool
-from sklearn.model_selection import cross_val_score
-from sklearn.tree import DecisionTreeClassifier
-from sklearn import svm
-from skimage.feature import hog
+#import threading
+#from multiprocessing import Process, Pool
+#from sklearn.model_selection import cross_val_score
+#from sklearn.tree import DecisionTreeClassifier
+#from sklearn import svm
+#from skimage.feature import hog
 import cv2
 from tqdm import tqdm
+from os import listdir
+from os.path import isfile,join
+import sys
+#img_array = scipy.misc.imread("Untitled1.png",flatten=True)
 
-img_array = scipy.misc.imread("Untitled1.png",flatten=True)
-
-img_data = 255.0 - img_array.reshape(784)
-img_data = (img_data/255.0 * 0.99) + 0.01
+#img_data = 255.0 - img_array.reshape(784)
+#img_data = (img_data/255.0 * 0.99) + 0.01
 
 values = ['0.0','1.0','2.0','3.0','4.0','5.0','6.0','7.0','8.0','9.0','10.0','11.0','12.0','13.0','14.0','15.0','16.0','17.0','18.0','19.0','20.0','21.0','22.0','23.0','24.0','25.0','26.0','27.0','28.0','29.0','30.0','31.0','32.0','33.0','34.0','35.0']
 
@@ -82,7 +84,7 @@ f.close()
 
 nn = NeuralNetwork(input_nodes,hidden_nodes,output_nodes,learning_rate)
 #i = 0
-epochs = 50
+epochs = 200
 ep = 1
 for i in range(epochs):
 	for record in tqdm(f_list):
@@ -123,17 +125,25 @@ for i in range(epochs):
 # 	else:
 # 		scorecard.append(0)
 
-img = cv2.imread("../project/training_data/all_train/2_1.jpg")
-print img.shape
-# img = cv2.imread("../project/BadImag/Bmp/Sample005/img005-00001.png")
-# img = cv2.resize(img, (25,25,3))	
-gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY).reshape(1,625)
-# (thresh, im_bw) = cv2.threshold(gray_img, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-# im_bw = im_bw.reshape(1,400)
-# # # print lr.predict(gray_img)
-res = nn.classify(np.asfarray(gray_img)/255.0 + 0.01)
-arr = np.argmax(res)
-print arr
+mypath = sys.argv[1]
+#print mypath
+files = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+#print files
+for file_name in files:
+	file_name = mypath+"/"+file_name
+	img = cv2.imread(file_name)
+	img = cv2.resize(img,(25,25))
+	print img.shape
+	# img = cv2.imread("../project/BadImag/Bmp/Sample005/img005-00001.png")
+	# img = cv2.resize(img, (25,25,3))	
+	gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY).reshape(1,625)
+	# (thresh, im_bw) = cv2.threshold(gray_img, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+	# im_bw = im_bw.reshape(1,400)
+	# # # print lr.predict(gray_img)
+	res = nn.classify(np.asfarray(gray_img)/255.0 + 0.01)
+	arr = np.argmax(res)
+	print file_name
+	print arr
 
 
 # print "The accuracy is: " + str(float(sum(scorecard)/len(scorecard)))
