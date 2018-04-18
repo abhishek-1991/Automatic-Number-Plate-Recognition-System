@@ -167,7 +167,7 @@ hidden_inp2 = 300
 activation = "sigmoid"
 
 batch_size = 16
-epochs = 1
+epochs = 100
 ep = 1
 past_loss = [20,20]
 validation_accuracy = 0.0
@@ -202,6 +202,13 @@ def validate(files):
 def train_model():
 	#file that contains the training data
 	file_path = "full_train.csv"
+	batch_size = 16
+	epochs = 100
+	hidden_inp1 = 400
+	hidden_inp2 = 300
+	activation = "sigmoid"
+	batch_size = 16
+
 	input1 = raw_input("Do you want to continue with default option(1) or configure it manually(2)\n")
 	option  = int(input1)
 	if option == 2:
@@ -220,7 +227,7 @@ def train_model():
 		f_list = f.readlines()[1:49601]
 		f.close()
 	else:
-		print "File containing training data doesn't exist"
+		print ("File containing training data doesn't exist")
 	
 	X_train = []
 	Y_train = []
@@ -247,7 +254,7 @@ def train_model():
 			loss += nn.train(x_train, y_train)
 
 		#validation_accuracy, wrong_predictions = validate(files)
-		print "Loss after epoch " + str(ep) + " is : " + str(float(loss)/float(48500))
+		print ("Loss after epoch " + str(ep) + " is : " + str(float(loss)/float(48500)))
 		#print "Validation accuracy after epoch " + str(ep) + " is " + str(validation_accuracy)
 		past_loss.append(float(loss)/float(48500))
 		ep += 1	
@@ -261,15 +268,16 @@ def train_model():
 					'_' + str(int(validation_accuracy)) + '.hkl'
 
 	hkl.dump(data, hickle_file)
-	print "Dumping the data in given file for further use " + hickle_file + "\n"
+	print ("Dumping the data in given file for further use " + hickle_file + "\n")
 	return hickle_file
 
 #train function end here
 
 #validate_from_already_trained_model : train the data from already trained file
 def validate_from_already_trained_model(files):
-	hickle_file = './hickle_files/1' + activation + '_' + str(hidden_inp1) + '_' + str(hidden_inp2) + '_' + str(85) + '.hkl'
+	#hickle_file = './hickle_files/1' + activation + '_' + str(hidden_inp1) + '_' + str(hidden_inp2) + '_' + str(85) + '.hkl'
 	#print "hickle_file is " + hickle_file
+	hickle_file = "./hickle_files/1sigmoid_400_300_85.hkl"
 	data2 = hkl.load(hickle_file)
 	nn.theta1 = data2['theta1']
 	nn.theta2 = data2['theta2']
@@ -278,7 +286,7 @@ def validate_from_already_trained_model(files):
 	nn.b2 = data2['b2']
 	nn.b3 = data2['b3']
 	plate_number = validate(files)
-	print plate_number
+	print (plate_number)
 	return plate_number
 
 
@@ -290,7 +298,7 @@ def wrapper_for_validate_only(files):
 def wrapper_for_train_and_validate(files):
 	train_model()
 	plate_number = validate(files)
-	print plate_number
+	print (plate_number)
 	return plate_number
 
 def ann_call_fn(files):
@@ -299,11 +307,11 @@ def ann_call_fn(files):
 	if option == 1:
 		ret_value = wrapper_for_validate_only(files)
 		return ret_value
-	else if option == 2:
+	elif option == 2:
 		ret_value = wrapper_for_train_and_validate(files)
 		return ret_value
 	else:
-		printf("Invalid Option\n")
+		print("Invalid Option\n")
 		return "Invalid Option"
 
 
