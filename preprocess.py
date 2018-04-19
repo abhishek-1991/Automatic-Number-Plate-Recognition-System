@@ -139,13 +139,12 @@ def segmentation(plateImage):
 	resizedPlateImage = cv2.resize(plateImage, (140,33))
 	resizedPlateImage=cv2.equalizeHist(resizedPlateImage)
 	_,threshPlateImage=cv2.threshold(resizedPlateImage, 60, 255, cv2.THRESH_BINARY_INV)
-	#_,contour,_=cv2.findContours(threshPlateImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-	contour,_=cv2.findContours(threshPlateImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+	_,contour,_=cv2.findContours(threshPlateImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 	
 	for index,contourElement in enumerate(contour):
 		if (validateContourElement(contourElement)):
 			countourRectangle = cv2.minAreaRect(contourElement)
-			countourBox = cv2.cv.BoxPoints(countourRectangle)
+			countourBox = cv2.boxPoints(countourRectangle)
 			segImgCoordinates.append(countourBox[0][0])
 			centre=countourRectangle[0]
 			cropped=cv2.getRectSubPix(threshPlateImage,(int(min(countourRectangle[1])), int(numpy.amax(countourRectangle[1]))) , centre)
@@ -171,7 +170,7 @@ def segmentation(plateImage):
 #Function to Validate Contour Elements
 def validateContourElement(contourElement):
     countourRectangle=cv2.minAreaRect(contourElement)  
-    countourBox=cv2.cv.BoxPoints(countourRectangle)
+    countourBox=cv2.boxPoints(countourRectangle)
     width=countourRectangle[1][0]
     height=countourRectangle[1][1]
     retVal=False

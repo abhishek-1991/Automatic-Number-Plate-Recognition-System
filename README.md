@@ -22,7 +22,7 @@ sudo apt-get install python-pip
 
 sudo python -m pip install numpy
 
-sudo apt-get install python-opencv
+sudo python2 -m pip install opencv-python
 
 sudo python -m pip install scipy
 
